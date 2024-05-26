@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Prediction App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #2980b9, #6dd5fa, #ffffff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-in-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #prediction-result {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Purchase Prediction App</h1>
+        <p>Welcome to the Purchase Prediction App! This app predicts whether a customer will purchase an item based on their age and estimated salary.</p>
+        
+        <form id="prediction-form">
+            <label for="age">Enter Age:</label>
+            <input type="number" id="age" name="age" min="0" max="120" required><br>
+            
+            <label for="salary">Enter Estimated Salary:</label>
+            <input type="number" id="salary" name="salary" min="0" required><br>
+            
+            <button type="submit">Predict</button>
+        </form>
+        
+        <div id="prediction-result"></div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#prediction-form').submit(function(event){
+                event.preventDefault();
+                var age = $('#age').val();
+                var estimated_salary = $('#salary').val();
+                var form_data = {
+                    "age": age,
+                    "estimated_salary": estimated_salary
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/predict',
+                    contentType: 'application/json',
+                    data: JSON.stringify(form_data),
+                    success: function(response){
+                        var result_div = $('#prediction-result');
+                        if(response.prediction == 1){
+                            result_div.html("<p style='color:green;'>Item will be purchased</p>");
+                        } else {
+                            result_div.html("<p style='color:red;'>Item will not be purchased</p>");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

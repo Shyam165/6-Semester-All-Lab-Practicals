@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Prediction App</title>
+</head>
+<body>
+    <h1>Purchase Prediction App</h1>
+    <p>Welcome to the Purchase Prediction App! This app predicts whether a customer will purchase an item based on their age and estimated salary.</p>
+    
+    <form id="prediction-form">
+        <label for="age">Enter Age:</label>
+        <input type="number" id="age" name="age" min="0" max="120" required><br><br>
+        
+        <label for="salary">Enter Estimated Salary:</label>
+        <input type="number" id="salary" name="salary" min="0" required><br><br>
+        
+        <button type="submit">Predict</button>
+    </form>
+    
+    <div id="prediction-result"></div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#prediction-form').submit(function(event){
+                event.preventDefault();
+                var age = $('#age').val();
+                var estimated_salary = $('#salary').val();
+                var form_data = {
+                    "age": age,
+                    "estimated_salary": estimated_salary
+                };
+    
+                $.ajax({
+                    type: 'POST',
+                    url: '/predict',
+                    contentType: 'application/json',
+                    data: JSON.stringify(form_data),
+                    success: function(response){
+                        var result_div = $('#prediction-result');
+                        if(response.prediction == 1){
+                            result_div.html("<p style='color:green;'>Item will be purchased</p>");
+                        } else {
+                            result_div.html("<p style='color:red;'>Item will not be purchased</p>");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
